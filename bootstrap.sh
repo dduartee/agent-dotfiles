@@ -1,57 +1,114 @@
 #!/usr/bin/env bash
-# bootstrap.sh — dotfiles de agentes (espelha $HOME).
+# bootstrap.sh — dotfiles de agentes (espelha apenas caminhos gerenciados).
 #
-#   ./bootstrap.sh link   (default)  repo -> $HOME   (symlink por arquivo; backup .prelink.bak)
-#   ./bootstrap.sh sync              $HOME -> repo   (snapshot do que mudou)
+#   ./bootstrap.sh link   repo -> $HOME
+#   ./bootstrap.sh sync   $HOME -> repo
 #
-# Exceções (merge MANUAL, nunca linkadas/copiadas):
-#   .config/opencode/opencode.json  — a versão da máquina tem MCP/token local
-#                                     (ex.: daily-digest); a do repo é base sanitizada.
+# O link é explícito: nunca move arquivo local sem FORCE=1. O sync nunca toca
+# opencode.json porque a configuração da máquina pode conter MCPs/segredos.
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")" && pwd)"
 HOME_DIR="${HOME:?}"
 DRY="${DRY_RUN:-0}"
+FORCE="${FORCE:-0}"
 CMD="${1:-link}"
 
-SKIP_RE='^\.config/opencode/opencode\.json$'
+case "$CMD" in
+  link|sync) ;;
+  *) echo "uso: $0 [link|sync]" >&2; exit 2 ;;
+esac
 
-# arquivos gerenciados (relativos ao repo = relativos ao $HOME)
-mapfile -t ITEMS < <(
-  cd "$REPO" && find . -type f \
+fail() { echo "erro: $*" >&2; exit 1; }
+
+# Arquivos que pertencem ao espelho da máquina. Documentação, testes e
+# metadados do repo não são dotfiles de $HOME.
+managed_items() {
+  cd "$REPO"
+  find . -type f \
     -not -path './.git/*' \
-    -not -name 'README.md' -not -name '.gitignore' \
-    -not -name 'CURATION.md' -not -name 'bootstrap.sh' \
-    | sed 's#^\./##' | grep -vE "$SKIP_RE"
-)
-
-if [ "$CMD" = "sync" ]; then
-  for r in "${ITEMS[@]}"; do
-    src="$HOME_DIR/$r"; [ -e "$src" ] || { echo "skip (sem ~/$r)"; continue; }
-    mkdir -p "$REPO/$(dirname "$r")"; cp -f "$src" "$REPO/$r"; echo "sync $r"
+    -not -name '.gitkeep' \
+    -not -path './.config/opencode/opencode.json' \
+    -print0 |
+  while IFS= read -r -d '' path; do
+    rel="${path#./}"
+    case "$rel" in
+      .config/opencode/*|.agents/skills/*) printf '%s\n' "$rel" ;;
+    esac
   done
-  # importa skills marcadas "sim" na CURATION.md (de ~/.agents ou ~/.config/opencode/skills)
-  if [ -f "$REPO/CURATION.md" ]; then
-    grep -E '^\|[^|]+\|[^|]+\|[[:space:]]*sim[[:space:]]*\|' "$REPO/CURATION.md" \
-      | awk -F'|' '{gsub(/^ +| +$/,"",$2); print $2}' | while read -r name; do
-        for base in "$HOME_DIR/.agents/skills" "$HOME_DIR/.config/opencode/skills"; do
-          if [ -d "$base/$name" ]; then
-            mkdir -p "$REPO/.agents/skills/$name"; cp -fR "$base/$name/." "$REPO/.agents/skills/$name/"
-            echo "skill: $name"; break
-          fi
-        done
-      done
-  fi
+}
+
+mapfile -t ITEMS < <(managed_items)
+
+# Retorna source permitido para uma skill. ~/.agents é preferencial; os outros
+# roots são compatibilidade para skills locais ainda não migradas.
+find_skill_source() {
+  local name="$1" base
+  for base in \
+    "$HOME_DIR/.agents/skills" \
+    "$HOME_DIR/.config/opencode/skills" \
+    "$HOME_DIR/.claude/skills"; do
+    if [ -f "$base/$name/SKILL.md" ]; then
+      printf '%s\n' "$base/$name"
+      return 0
+    fi
+  done
+  return 1
+}
+
+if [ "$CMD" = sync ]; then
+  for rel in "${ITEMS[@]}"; do
+    src="$HOME_DIR/$rel"
+    [ -e "$src" ] || fail "source ausente: ~/$rel"
+    mkdir -p "$REPO/$(dirname "$rel")"
+    cp -f "$src" "$REPO/$rel"
+    echo "sync $rel"
+  done
+
+  [ -f "$REPO/CURATION.md" ] || fail "CURATION.md ausente"
+  # Valida coluna incluir e devolve somente o allowlist explícito.
+  marked="$(awk -F'|' '
+    function trim(s) { gsub(/^[[:space:]]+|[[:space:]]+$/, "", s); return s }
+    /^\|/ {
+      skill=trim($2); include=trim($4)
+      if (skill == "" || skill == "skill" || skill == "---") next
+      if (include == "sim") print skill
+      else if (include != "" && include != "nao" && include != "não") {
+        printf "incluir inválido para %s: %s\n", skill, include > "/dev/stderr"
+        exit 2
+      }
+    }
+  ' "$REPO/CURATION.md")" || fail "CURATION.md inválido"
+
+  while IFS= read -r name; do
+    [ -n "$name" ] || continue
+    if ! source="$(find_skill_source "$name")"; then
+      fail "skill source ausente: $name"
+    fi
+    mkdir -p "$REPO/.agents/skills/$name"
+    cp -fR "$source/." "$REPO/.agents/skills/$name/"
+    echo "skill: $name"
+  done <<< "$marked"
+
   echo "snapshot pronto. Revise: git -C \"$REPO\" status"
   exit 0
 fi
 
-for r in "${ITEMS[@]}"; do
-  dst="$HOME_DIR/$r"
-  if [ "$DRY" = 1 ]; then echo "would link ~/$r -> $REPO/$r"; continue; fi
+for rel in "${ITEMS[@]}"; do
+  dst="$HOME_DIR/$rel"
+  if [ "$DRY" = 1 ]; then
+    echo "would link ~/$rel -> $REPO/$rel"
+    continue
+  fi
   mkdir -p "$(dirname "$dst")"
-  if [ -e "$dst" ] && [ ! -L "$dst" ]; then mv "$dst" "$dst.prelink.bak"; fi
-  ln -sfn "$REPO/$r" "$dst"; echo "link ~/$r"
+  if [ -e "$dst" ] && [ ! -L "$dst" ]; then
+    if [ "$FORCE" != 1 ]; then
+      fail "destino existe: ~/$rel (use FORCE=1 para mover para .prelink.bak)"
+    fi
+    mv "$dst" "$dst.prelink.bak"
+  fi
+  ln -sfn "$REPO/$rel" "$dst"
+  echo "link ~/$rel"
 done
 
 echo
