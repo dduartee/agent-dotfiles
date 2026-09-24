@@ -29,13 +29,13 @@ Fonte viva: `~/.agents/skills` + `~/.config/opencode/skills`.
 | documentation-and-adrs | 3º (superpowers?) |  |
 | domain-modeling | 3º (superpowers?) |  |
 | doubt-driven-development | 3º (superpowers?) |  |
-| estilo-ajudante-haicai | própria |  |
-| estilo-conciso | própria |  |
-| estilo-evangelista-tecnico | própria |  |
-| estilo-jornalista-tabloid | própria |  |
-| estilo-mestre-zen | própria |  |
-| estilo-poeta-existencialista | própria |  |
-| estilo-vendedor-de-vim | própria |  |
+| estilo-ajudante-haicai | própria | sim |
+| estilo-conciso | própria | sim |
+| estilo-evangelista-tecnico | própria | sim |
+| estilo-jornalista-tabloid | própria | sim |
+| estilo-mestre-zen | própria | sim |
+| estilo-poeta-existencialista | própria | sim |
+| estilo-vendedor-de-vim | própria | sim |
 | find-skills | 3º (superpowers?) |  |
 | frontend-ui-engineering | 3º (superpowers?) |  |
 | git-guardrails-claude-code | 3º (superpowers?) |  |
@@ -59,7 +59,7 @@ Fonte viva: `~/.agents/skills` + `~/.config/opencode/skills`.
 | planning-and-task-breakdown | 3º (superpowers?) |  |
 | prototype | 3º (superpowers?) |  |
 | resolving-merge-conflicts | 3º (superpowers?) |  |
-| retrospectiva | própria |  |
+| retrospectiva | própria | sim |
 | scaffold-exercises | 3º (superpowers?) |  |
 | security-and-hardening | 3º (superpowers?) |  |
 | setup-matt-pocock-skills | 3º (superpowers?) |  |
