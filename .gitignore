@@ -1,0 +1,27 @@
+# forma-de-credencial (mesmo privado, não entra)
+.env
+*.env
+*.key
+*.pem
+*token*
+*secret*
+*credential*
+*.local
+
+# estado / backups locais
+*.bak
+*.bak.*
+*.prelink.bak
+*state*.json
+.mind-automation-state.json
+.caveman-active
+opencode.json.local
+
+# ruído
+node_modules/
+package.json
+package-lock.json
+bun.lock
+.DS_Store
+__pycache__/
+.venv/
