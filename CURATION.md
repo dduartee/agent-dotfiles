@@ -1,7 +1,7 @@
 # Curadoria de skills
 
-Marque `sim` na coluna **incluir** e eu movo p/ a raiz do repo (flat).
-Fonte: `~/.agents/skills` + `~/.config/opencode/skills`.
+Marque `sim` na coluna **incluir** e rode `./bootstrap.sh sync` (traz p/ `.agents/skills/`).
+Fonte viva: `~/.agents/skills` + `~/.config/opencode/skills`.
 
 | skill | tipo | incluir |
 |---|---|---|

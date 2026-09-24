@@ -15,7 +15,6 @@
 *state*.json
 .mind-automation-state.json
 .caveman-active
-opencode.json.local
 
 # ruído
 node_modules/
