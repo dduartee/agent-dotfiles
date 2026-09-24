@@ -75,7 +75,7 @@ if [ "$CMD" = sync ]; then
       skill=trim($2); include=trim($4)
       if (skill == "" || skill == "skill" || skill == "---") next
       if (include == "sim") print skill
-      else if (include != "" && include != "nao" && include != "não") {
+      else if (include != "" && include != "nao" && include != "não" && include != "defer") {
         printf "incluir inválido para %s: %s\n", skill, include > "/dev/stderr"
         exit 2
       }

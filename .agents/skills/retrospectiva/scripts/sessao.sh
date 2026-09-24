@@ -18,6 +18,7 @@ set -euo pipefail
 
 DB="${OPENCODE_DB:-$HOME/.local/share/opencode/opencode.db}"
 MAX="${RETRO_MAX:-1200}"
+[[ "$MAX" =~ ^[0-9]+$ ]] || { echo "ERRO: RETRO_MAX deve ser inteiro" >&2; exit 2; }
 
 resolve_sid() {
   [ -n "${1:-}" ] && { printf '%s\n' "$1"; return 0; }
@@ -71,6 +72,10 @@ SID=$(resolve_sid "${1:-}") || {
   echo "ERRO: não achei a sessão. Passe o id: bash scripts/sessao.sh ses_xxx"
   exit 1
 }
+[[ "$SID" =~ ^ses_[A-Za-z0-9_-]+$ ]] || {
+  echo "ERRO: SID inválido: $SID" >&2
+  exit 2
+}
 [ -f "$DB" ] || { echo "ERRO: banco não encontrado: $DB"; exit 1; }
 
 TITLE=$(opencode session list --format json 2>/dev/null \
@@ -93,6 +98,12 @@ sqlite3 -json "$DB" \
      | (try ($t | match($re; "i")) catch null) as $m
      | if $m == null then $t[0:160]
        else $t[([$m.offset - 40, 0] | max) : $m.offset + 140] end);
+  def redact:
+    gsub("sk-[A-Za-z0-9]{20,}"; "sk-[REDACTED]")
+    | gsub("xvl-[A-Za-z0-9]{20,}"; "xvl-[REDACTED]")
+    | gsub("gh[pousr]_[A-Za-z0-9]{20,}"; "gh_[REDACTED]")
+    | gsub("AKIA[0-9A-Z]{16}"; "AKIA[REDACTED]")
+    | gsub("-----BEGIN ([A-Z ]+)?PRIVATE KEY-----"; "[PRIVATE KEY REDACTED]");
   def norm: gsub("\\s+"; " ");
   . as $rows
   | ($rows | map(.type)) as $types
@@ -100,11 +111,11 @@ sqlite3 -json "$DB" \
       { seq: .seq, type: .type,
         text: ((.data | fromjson) as $m
                | if (.type=="user" or .type=="system" or .type=="synthetic") then ($m.text // "")
-                 else ([$m.content[]? | select(.type=="text") | .text] | join(" ")) end),
+                 else ([$m.content[]? | select(.type=="text") | .text] | join(" ")) end | redact),
         tools: (if .type=="assistant"
                 then [((.data|fromjson).content[]? | select(.type=="tool")
                        | { name: .name, status: (.state.status // "?"),
-                           err: (((.state.error.message // .state.metadata.error // "") | tostring)) })]
+                           err: ((((.state.error.message // .state.metadata.error // "") | tostring) | redact)) })]
                 else [] end) })) as $msgs
   | ([$msgs[] | .seq as $s | (.tools // [])[] | select(.status=="error")
       | "[erro ] seq \($s) · tool \(.name): \(.err | norm | .[0:120])"]) as $erros

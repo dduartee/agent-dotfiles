@@ -35,7 +35,8 @@ Data da coleta: 2026-09-24. Escopo: skills disponíveis, histórico de prompts e
 | `estilo-poeta-existencialista` | `sim` | Adaptação própria | Modo de saída; facts preserved | Alta | Versionar |
 | `estilo-vendedor-de-vim` | `sim` | Adaptação própria | Modo humorístico/opt-in | Alta | Versionar |
 | `generating-exams` | `sim` | Própria; sem upstream público | Uso direto declarado; overlap baixo | Alta, mas skill depende de PDFs/Chrome quando executada | Versionar; declarar dependências de execução |
-| `chrome-devtools-agent` | `sim` | Própria; wrapper local do MCP Chrome DevTools | Browser verification é relevante no histórico (console, screenshots, DOM, rede); valor como ferramenta de harness | OpenCode/MCP-specific | Versionar; documentar que MCP precisa estar instalado |
+| `spec-driven-harness` | `sim` | Local-derived em `~/.claude/skills`; sem upstream/license encontrado | Aplicado a projeto multi-arquivo; recovery/quality gates são valor operational | Alta como `SKILL.md` + references; depende de harness/dispatch | Versionar como harness; documentar como local-derived |
+| `chrome-devtools-agent` | `defer` | Derivada de `github/awesome-copilot`, MIT; cópia local removeu créditos e usa API antiga | Browser verification é relevante, mas duplica `browser-testing-with-devtools`; `browserContext` → `isolatedContext` pendente | OpenCode/MCP-specific | Não versionar ainda; reconciliar upstream e API |
 | `mind-management` | `não` | MIT, upstream em `Projects/mind/src/resources/skill-mind-management.md` | É protocolo do projeto Mind, não autoria própria; setup do Mind o gerencia | Depende de Mind/OpenCode | Não vendorizar; documentar instalação/atualização no `sources.md` |
 | `doubt-driven-development` | `não` | MIT, `addyosmani/agent-skills` | Alto valor para revisão adversarial, mas third-party | Externa | Manter symlink/pack; documentar origem |
 | `i-have-adhd` | `não` | MIT, vendor `ayghri/i-have-adhd` | Preferência de output; já ativo no ambiente | Externa | Manter vendor; documentar commit/update |
@@ -78,4 +79,4 @@ A mineração encontrou `browser-testing-with-devtools` 15 vezes, `context-engin
 - Sete `estilo-*` continuam `sim` por preferência explícita do usuário e objetivo do repo, mas a evidência de uso individual é fraca; pressure-test permanece pendência, não motivo para apagá-los.
 - `spec-driven-harness` entra como local-derived: apareceu em `~/.claude/skills` e foi aplicado a este trabalho multi-arquivo.
 - `mind-management` fica `não`: o Mind é owner do skill e pode regenerá-lo.
-- `chrome-devtools-agent` fica `sim` como wrapper local-derived, com dependência MCP explícita; se origem pública for confirmada futuramente, mover para `sources.md`.
+- `chrome-devtools-agent` fica `defer`: a cópia local deriva de `github/awesome-copilot`, usa API antiga e duplica `browser-testing-with-devtools`. Remover do repo até reconciliar `isolatedContext` e créditos.

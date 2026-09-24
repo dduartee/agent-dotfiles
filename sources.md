@@ -22,9 +22,10 @@ Este repo versiona apenas conteúdo próprio ou derivado explicitamente aprovado
 | `ayghri/i-have-adhd` | Vendor de output ADHD | MIT; commit de referência `839872f` | `git pull` no checkout; symlink por diretório |
 | `terminal-browser` | Skill do app local | Código do app local | Atualizar junto com app; symlink por diretório |
 | `dduartee/mind` | MCP, protocolo e `mind-management` gerado | MIT; source canônica no projeto Mind | `mind setup opencode`/refresh; nunca vendorizar `mind-management` aqui |
-| `hesreallyhim/awesome-claude-code-output-styles` + `smixs` | Origem dos estilos adapted/ported | Atribuição e licença devem acompanhar cada arquivo | Diff manual; não há sync automático |
-| `nenhum upstream` | `generating-exams` | Própria | Alterar somente neste repo |
-| `origem local` | `retrospectiva`, `spec-driven-harness`, `chrome-devtools-agent` | Própria/derivada; atribuição registrada em `docs/curation-evidence.md` | Alterar neste repo; dependências declaradas no README |
+| `hesreallyhim/awesome-claude-code-output-styles` + `smixs` | Origem dos estilos adapted/ported | MIT; créditos devem acompanhar cada arquivo | Diff manual; não há sync automático |
+| `github/awesome-copilot` | Skill Chrome DevTools local; cópia derivada, API desatualizada | MIT; reconciliar antes de promover | `defer`; atualizar para `isolatedContext` e remover overlap |
+| `nenhum upstream` | `generating-exams` | Própria; licença local não declarada | Alterar somente neste repo |
+| `origem local` | `retrospectiva`, `spec-driven-harness` | Própria/derivada; atribuição registrada em `docs/curation-evidence.md` | Alterar neste repo; dependências declaradas no README |
 
 ## Comandos de referência
 
@@ -76,6 +77,7 @@ bun install
 
 ### Others
 
+- `github/awesome-copilot` — skill Chrome DevTools: cópia local é derivada, não canônica. Fonte: <https://github.com/github/awesome-copilot/blob/main/skills/chrome-devtools/SKILL.md>. Não importar até atualizar API (`isolatedContext`) e resolver overlap.
 - `JuliusBrussee/caveman`, `mattpocock/skills` e `vercel-labs/*`: usar instalador oficial e manter `.skill-lock.json`/commit como provenance.
 - `terminal-browser`: atualizar app local; não há comando de instalação neste repo.
 - `estilo-*`: comparar upstream manualmente; alterações de comportamento exigem pressure-test antes de promover.

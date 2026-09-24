@@ -94,6 +94,6 @@ Terceiros nunca são copiados para este repo; veja `sources.md`.
 | writing-for-agents | externo |  |
 | writing-fragments | externo |  |
 | writing-shape | externo |  |
-| chrome-devtools-agent | local-derived (OpenCode/MCP) | sim |
+| chrome-devtools-agent | externo/derived (awesome-copilot) | defer |
 | generating-exams | própria (opencode-only) | sim |
 | mind-management | externo (gerado pelo Mind) | não |

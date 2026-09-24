@@ -19,9 +19,12 @@ O agente esquece e deixa pendências para trás. Pior: a compactação de contex
 Roda o script e lê a saída inteira:
 
 ```bash
-bash scripts/sessao.sh            # sessão atual (auto)
-bash scripts/sessao.sh ses_xxx    # sessão específica
+SKILL_DIR="${SKILL_DIR:-$HOME/.agents/skills/retrospectiva}"
+bash "$SKILL_DIR/scripts/sessao.sh"            # sessão atual (auto)
+bash "$SKILL_DIR/scripts/sessao.sh" ses_xxx    # sessão específica
 ```
+
+Use o caminho absoluto do skill; execução a partir de outro diretório não muda ground truth. `OPENCODE_DB` e `RETRO_MAX` podem sobrescrever DB e limite de caracteres.
 
 O ID é resolvido sozinho: `$OPENCODE_SESSION_ID` → `GET /api/session/active` → casa `location.directory` com o cwd. Com **2+ sessões no mesmo diretório** (ex.: outro agente rodando em paralelo), o script **não adivinha** — lista os candidatos e pede o id. Se falhar, passe `ses_xxx`.
 

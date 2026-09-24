@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+bash "$ROOT/scripts/validate-repo.sh"
+bash "$ROOT/tests/bootstrap-test.sh"
+bash "$ROOT/tests/validate-repo-test.sh"
+node "$ROOT/tests/pontas-soltas-test.mjs"
+bash "$ROOT/tests/retrospectiva-test.sh"

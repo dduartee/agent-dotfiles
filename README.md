@@ -50,8 +50,9 @@ Allowlist atual inclui:
 - `retrospectiva`
 - `generating-exams`
 - `spec-driven-harness`
-- `chrome-devtools-agent` (derivado local; requer MCP)
 - sete `estilo-*` adapted/ported, com atribuição em `sources.md`
+
+Decisão `defer`: `chrome-devtools-agent` deriva de `github/awesome-copilot` e precisa de reconciliação de API antes de entrar.
 
 `mind-management` não é vendorizado: é gerado pelo projeto Mind. `doubt-driven-development`, `i-have-adhd`, `terminal-browser`, Superpowers e demais packs externos ficam em `sources.md`.
 
@@ -85,6 +86,7 @@ git config core.hooksPath .githooks
 
 - Objetivo: [`/tmp/opencode/agent-dotfiles-objetivo-final.md`](/tmp/opencode/agent-dotfiles-objetivo-final.md)
 - Evidência de curadoria: [`docs/curation-evidence.md`](docs/curation-evidence.md)
+- Atribuições: [`docs/ATTRIBUTIONS.md`](docs/ATTRIBUTIONS.md)
 - Fontes externas: [`sources.md`](sources.md)
 - OpenCode v2 skills: <https://opencode.ai/v2/docs/skills/>
 - Repositório: <https://github.com/dduartee/agent-dotfiles> (privado)
