@@ -58,6 +58,8 @@ find_skill_source() {
 
 if [ "$CMD" = sync ]; then
   for rel in "${ITEMS[@]}"; do
+    # Skills have a source precedence and are imported by the allowlist below.
+    case "$rel" in .agents/skills/*) continue ;; esac
     src="$HOME_DIR/$rel"
     [ -e "$src" ] || fail "source ausente: ~/$rel"
     mkdir -p "$REPO/$(dirname "$rel")"
