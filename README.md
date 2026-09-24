@@ -61,6 +61,8 @@ DRY_RUN=1 ./bootstrap.sh link   # prévia
 **Favoritas em uso:** `doubt-driven-development` · `brainstorming` (+ visual-companion)
 · `i-have-adhd` · `generating-exams` (própria, versionada).
 
+Comandos de instalação/atualização reproduzíveis: [`sources.md`](sources.md).
+
 ## Rules
 
 `.gitignore` bloqueia forma-de-credencial (`.env`, `*.key`, `*token*`,
