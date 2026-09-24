@@ -1,21 +1,44 @@
-# Fontes externas — instalação reproduzível
+# Fontes externas e componentes não vendorizados
 
-Packs ficam em `~/.local/share/agent-packs` (clone) e são expostos por **symlink
-do diretório da skill** em `~/.agents/skills/` — não cópia. Isso preserva os
-caminhos relativos internos do pack (ex.: `SKILL.md` usa `../../references/`).
+Este repo versiona apenas conteúdo próprio ou derivado explicitamente aprovado em `CURATION.md`. Packs externos continuam instalados/gerenciados na máquina e são registrados aqui para reprodução.
 
-## superpowers — `brainstorming` (+ visual-companion)
+## Política
 
-Plugin do OpenCode. Em `~/.config/opencode/opencode.json`:
+- `bootstrap.sh` não instala packs externos e não copia `~/.agents` inteiro.
+- `~/.agents/skills` é source de compatibilidade; `~/.config/opencode/skills` e `~/.claude/skills` são sources de fallback para skills locais ainda não migradas.
+- `CURATION.md` é allowlist de conteúdo versionado. `sim` exige source local; `não` mantém dependência fora.
+- Atualizar um pack exige atualizar sua origem, preservar atribuição/licença e revisar diff; não fazer `git add -A` cegamente.
+- Secrets, tokens, paths de conta e estado de runtime não entram neste arquivo.
+
+## Inventário de origem
+
+| Fonte | Skills/uso | Licença/proveniência | Atualização |
+|---|---|---|---|
+| `obra/superpowers` | `brainstorming`, visual-companion e skills de processo | MIT; plugin OpenCode | Fixar tag/commit no cache; config local declara plugin |
+| `mattpocock/skills` | `ask-matt`, `handoff`, `writing-for-agents`, `tdd`, `to-spec`, `to-tickets` e outras de engenharia | Upstream público; confirmar `LICENSE` por commit antes de redistribuir | Usar instalador do pack; `~/.agents/.skill-lock.json` é lock local |
+| `JuliusBrussee/caveman` | `caveman*`, `compress` e `caveman-commit` | Upstream público; confirmar `LICENSE` por commit | Atualizar pelo instalador; não copiar para repo |
+| `addyosmani/agent-skills` | `doubt-driven-development` | MIT; `skills/doubt-driven-development/` | Clone/symlink do diretório completo; preservar `references/` e `agents/` |
+| `vercel-labs/skills` + `vercel-labs/agent-skills` | `find-skills`, `vercel-react-best-practices`, `web-design-guidelines` | Upstream público; confirmar licença por commit | Reinstalar pelo pack; manter em `~/.agents/skills` |
+| `ayghri/i-have-adhd` | Vendor de output ADHD | MIT; commit de referência `839872f` | `git pull` no checkout; symlink por diretório |
+| `terminal-browser` | Skill do app local | Código do app local | Atualizar junto com app; symlink por diretório |
+| `dduartee/mind` | MCP, protocolo e `mind-management` gerado | MIT; source canônica no projeto Mind | `mind setup opencode`/refresh; nunca vendorizar `mind-management` aqui |
+| `hesreallyhim/awesome-claude-code-output-styles` + `smixs` | Origem dos estilos adapted/ported | Atribuição e licença devem acompanhar cada arquivo | Diff manual; não há sync automático |
+| `nenhum upstream` | `generating-exams` | Própria | Alterar somente neste repo |
+| `origem local` | `retrospectiva`, `spec-driven-harness`, `chrome-devtools-agent` | Própria/derivada; atribuição registrada em `docs/curation-evidence.md` | Alterar neste repo; dependências declaradas no README |
+
+## Comandos de referência
+
+### Superpowers
 
 ```json
-{ "plugin": ["superpowers@git+https://github.com/obra/superpowers.git"] }
+{
+  "plugin": ["superpowers@git+https://github.com/obra/superpowers.git"]
+}
 ```
 
-Instala no cache ao iniciar/recarregar. Reparar cache:
-`rm -rf ~/.cache/opencode/npm/git-superpowers-*` e reiniciar.
+A tag/commit deve ser fixado no cache local quando a versão for promovida. O bootstrap não faz esse refresh.
 
-## addyosmani/agent-skills — `doubt-driven-development`
+### Addy Osmani
 
 ```bash
 mkdir -p ~/.local/share/agent-packs ~/.agents/skills
@@ -25,10 +48,10 @@ ln -sfn ~/.local/share/agent-packs/addyosmani-agent-skills/skills/doubt-driven-d
   ~/.agents/skills/doubt-driven-development
 ```
 
-Atualizar: `git -C ~/.local/share/agent-packs/addyosmani-agent-skills pull`.
-(O pack traz `references/` e `agents/` usados pela skill — por isso symlink do dir, não cópia solta.)
+Atualizar: `git -C ~/.local/share/agent-packs/addyosmani-agent-skills pull --ff-only`.
+O symlink preserva referências relativas do pack.
 
-## ayghri/i-have-adhd
+### i-have-adhd
 
 ```bash
 git clone --depth 1 https://github.com/ayghri/i-have-adhd \
@@ -37,21 +60,37 @@ ln -sfn ~/.local/share/opencode/vendor/i-have-adhd/skills/i-have-adhd \
   ~/.agents/skills/i-have-adhd
 ```
 
-Atualizar: `git -C ~/.local/share/opencode/vendor/i-have-adhd pull` (commit de referência: `839872f`).
+Atualizar: `git -C ~/.local/share/opencode/vendor/i-have-adhd pull --ff-only`.
+O commit de referência atual é `839872f`; trocar versão exige revisar regras de output.
 
-## terminal-browser
+### Mind
 
-Skill do app local em `~/.local/share/terminal-browser` → symlink do dir da skill
-em `~/.agents/skills/`. Atualiza junto com o app.
+```bash
+git clone --depth 1 https://github.com/dduartee/mind.git ~/.local/share/mind
+cd ~/.local/share/mind
+bun install
+./mind setup opencode
+```
 
-## `estilo-*` (portadas)
+`mind setup` pode gerenciar `mind-management` e `mind-automation.js`; tratar ambos como componentes gerados. Não linkar o skill gerado para dentro deste repo.
 
-Origem: [hesreallyhim/awesome-claude-code-output-styles](https://github.com/hesreallyhim/awesome-claude-code-output-styles)
-(+ smixs). **Portadas e versionadas neste repo** — sem sync automático; diff manual quando o upstream mudar.
+### Others
 
-## `generating-exams`
+- `JuliusBrussee/caveman`, `mattpocock/skills` e `vercel-labs/*`: usar instalador oficial e manter `.skill-lock.json`/commit como provenance.
+- `terminal-browser`: atualizar app local; não há comando de instalação neste repo.
+- `estilo-*`: comparar upstream manualmente; alterações de comportamento exigem pressure-test antes de promover.
 
-**Sem upstream público.** Própria, versionada em `.agents/skills/generating-exams/`.
+## Limites conhecidos
 
----
-Reproduzir tudo numa máquina nova: rodar os blocos acima e depois `./bootstrap.sh link`.
+- `opencode.json` sanitizado ainda contém paths absolutos e rede local; não é portátil sem merge manual.
+- `chrome-devtools-agent` depende do MCP Chrome DevTools instalado.
+- `retrospectiva` depende do schema/path do `opencode.db` da máquina.
+- `spec-driven-harness` é conteúdo local; não possui upstream declarado.
+- O lock de skills cobre parte do ambiente; não substitui um SBOM/licença por skill.
+
+## Regra de mudança
+
+1. Atualizar fonte/commit.
+2. Rodar testes/pressure-test do componente.
+3. Atualizar esta tabela e `CURATION.md` somente se a decisão de ownership mudou.
+4. Rodar `bash scripts/validate-repo.sh` e revisar `git diff`.

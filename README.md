@@ -1,70 +1,90 @@
 # agent-dotfiles
 
-> **Configuração pessoal de agentes de código**, tratada como **dotfiles**: o
-> repo espelha o `$HOME` e um `bootstrap.sh` linka de volta. Skills, plugins/
-> tools, instruções e base de MCP — **harness-agnostic**.
+Fonte da verdade privada para skills e configuração pessoal de agentes. Repo espelha caminhos gerenciados de `$HOME`; não tenta transformar toda configuração local em dotfiles.
 
-Feito sob medida para as minhas máquinas. Publicado (privado) para referência e
-backup. Peça ao teu próprio LLM para escrever a config das tuas necessidades.
+## Escopo real
 
-## Layout (espelho do `$HOME`)
+- **Shared skills:** `.agents/skills/<skill>/SKILL.md`, com allowlist em `CURATION.md`.
+- **Adaptador OpenCode:** `.config/opencode/{AGENTS.md,instructions,plugins}` e base sanitizada de `opencode.json`.
+- **Externos:** packs, vendor e MCPs continuam instalados na máquina; `sources.md` registra origem e update.
+- **Harness-agnostic é qualificado:** skills têm paths cross-runtime; config/plugins OpenCode são adapter-specific. Não prometer que um comando instala qualquer MCP/binário externo.
 
-```
+## Layout
+
+```text
 .config/opencode/
-  opencode.json            # base SANITIZADA (sem segredos)
+  opencode.json            # base sanitizada; nunca editada pela máquina via link
   AGENTS.md
-  plugins/*.js             # plugins/tools (OpenCode v2)
+  plugins/*.js             # harness OpenCode v2
   instructions/*.md
-.agents/skills/<skill>/SKILL.md   # skills (flat, dir por skill)
+.agents/skills/<skill>/SKILL.md
 bootstrap.sh               # link | sync
-CURATION.md                # triagem de skills
+CURATION.md                # allowlist e decisões de ownership
+sources.md                 # terceiros, vendor e dependências locais
+scripts/validate-repo.sh   # guardas locais
+.githooks/pre-commit       # hook opt-in
 ```
 
 ## Uso
 
 ```bash
-./bootstrap.sh link     # máquina nova: repo -> $HOME (backup .prelink.bak)
-./bootstrap.sh sync     # esta máquina: $HOME -> repo (snapshot; revise com git diff)
-DRY_RUN=1 ./bootstrap.sh link   # prévia
+./bootstrap.sh sync                 # $HOME -> repo; falha se source sim ausente
+DRY_RUN=1 ./bootstrap.sh link        # prévia repo -> $HOME
+./bootstrap.sh link                  # só caminhos gerenciados; não move arquivos
+FORCE=1 ./bootstrap.sh link           # move existente para .prelink.bak
+bash scripts/validate-repo.sh
 ```
 
-## Consumidores (skills)
+Fluxo de curadoria:
 
-`~/.agents/skills` é o alias cross-runtime. Os harnesses linkam **por skill**:
+```text
+CURATION.md -> bootstrap sync -> revisar git diff -> testes/validator -> commit
+```
 
-| Harness | Skills directory |
-| --- | --- |
-| shared (cross-runtime) | `~/.agents/skills` |
-| OpenCode v2 | `~/.config/opencode/skills` |
-| Claude Code | `~/.claude/skills` |
-| Codex | `~/.codex/skills` |
+`sync` lê `~/.agents/skills`, `~/.config/opencode/skills` e `~/.claude/skills` nessa ordem para skills marcadas. `link` não instala packs externos, não instala `opencode.json` e não deve tocar arquivos locais sem `FORCE=1`.
 
-## Deliberadamente FORA do repo
+## Conteúdo versionado
 
-- **`opencode.json` da máquina** — tem MCP/token local (`daily-digest`); a
-  versão daqui é **base**. `bootstrap.sh` **não** toca nele → merge manual.
-- **Estado local** — `.mind-automation-state.json`, `*.bak`, `.caveman-active`.
-- **Pessoal** — `pendentes.md`, `docs/`.
-- **Vendor de terceiros** — ver inventário abaixo; não copiar para cá.
+Allowlist atual inclui:
 
-## Componentes externos (origem GitHub + atualização)
+- `retrospectiva`
+- `generating-exams`
+- `spec-driven-harness`
+- `chrome-devtools-agent` (derivado local; requer MCP)
+- sete `estilo-*` adapted/ported, com atribuição em `sources.md`
 
-| Componente | Origem (GitHub) | Onde vive | Atualizar |
-| --- | --- | --- | --- |
-| superpowers (`brainstorming` + visual-companion, ...) | [obra/superpowers](https://github.com/obra/superpowers) — MIT, v6.4.1 | plugin OpenCode `superpowers@git+https://github.com/obra/superpowers.git` → `~/.cache/opencode/npm/…` | reinstalar o plugin |
-| doubt-driven-development | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) — MIT (`skills/doubt-driven-development/`) | copiada em `~/.agents/skills/` | re-baixar do pack |
-| i-have-adhd | [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd) — MIT | `~/.local/share/opencode/vendor/i-have-adhd` (symlink em `~/.agents/skills/`) | `git pull` |
-| terminal-browser | app local | `~/.local/share/terminal-browser` | atualizar o app |
-| vozes de output (`estilo-*`) | [hesreallyhim/awesome-claude-code-output-styles](https://github.com/hesreallyhim/awesome-claude-code-output-styles) + smixs | **portadas** → neste repo | diff manual |
-| generating-exams | **sem upstream público** (local) | **neste repo**, `.agents/skills/` | — |
+`mind-management` não é vendorizado: é gerado pelo projeto Mind. `doubt-driven-development`, `i-have-adhd`, `terminal-browser`, Superpowers e demais packs externos ficam em `sources.md`.
 
-**Favoritas em uso:** `doubt-driven-development` · `brainstorming` (+ visual-companion)
-· `i-have-adhd` · `generating-exams` (própria, versionada).
+## OpenCode/MCP
 
-Comandos de instalação/atualização reproduzíveis: [`sources.md`](sources.md).
+`.config/opencode/opencode.json` no repo é base sem segredo e não é instalado por `link`. A máquina pode conter MCPs, tokens, paths e modelos locais. Em máquina nova, revisar e mesclar manualmente a base; nunca copiar arquivo local para dentro do repo.
 
-## Rules
+Plugins locais versionados:
 
-`.gitignore` bloqueia forma-de-credencial (`.env`, `*.key`, `*token*`,
-`*secret*`), estado local (`*state*.json`, `*.bak`) e ruído. Mesmo privado,
-segredo não entra: a base `opencode.json` é sanitizada.
+- `pontas-soltas.js` — storage append-only por projeto, tool e hooks `context`/`compaction`.
+- `backlog.js` — injeta allowlist do backlog compartilhado.
+- `sessao-atual.js` — injeta id de sessão.
+- `mind-automation.js` — componente gerenciado/read-only; `mind setup` pode regenerá-lo. Tratar como derived, não como fonte autoritativa do Mind.
+
+## Segurança e manutenção
+
+- `CURATION.md` é allowlist estrita. `sim` exige `SKILL.md` disponível; `não` impede cópia de terceiros.
+- `.gitignore` bloqueia segredos, keys, tokens e estado; validador faz scan adicional.
+- Rodar `./scripts/validate-repo.sh` antes de commit.
+- Ativar hook local somente com:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+- `mind-management` e `mind-automation.js` têm ownership externo; evitar symlink para output gerado.
+- `retrospectiva` depende do schema `session_message` do OpenCode; mudança de schema exige teste.
+- Paths absolutos/IP local no `opencode.json` são limites de portabilidade, não portability automática.
+
+## Referências
+
+- Objetivo: [`/tmp/opencode/agent-dotfiles-objetivo-final.md`](/tmp/opencode/agent-dotfiles-objetivo-final.md)
+- Evidência de curadoria: [`docs/curation-evidence.md`](docs/curation-evidence.md)
+- Fontes externas: [`sources.md`](sources.md)
+- OpenCode v2 skills: <https://opencode.ai/v2/docs/skills/>
+- Repositório: <https://github.com/dduartee/agent-dotfiles> (privado)

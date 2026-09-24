@@ -1,7 +1,12 @@
 # Curadoria de skills
 
-Marque `sim` na coluna **incluir** e rode `./bootstrap.sh sync` (traz p/ `.agents/skills/`).
-Fonte viva: `~/.agents/skills` + `~/.config/opencode/skills`.
+Allowlist explícita. `sim` significa conteúdo local/derivado que este repo
+versiona; `não` significa terceiro/vendor gerenciado fora. Rode
+`./bootstrap.sh sync`; source `sim` ausente falha em vez de ser ignorado.
+
+Fontes permitidas para sync: `~/.agents/skills`,
+`~/.config/opencode/skills` e `~/.claude/skills` (preferência na ordem).
+Terceiros nunca são copiados para este repo; veja `sources.md`.
 
 | skill | tipo | incluir |
 |---|---|---|

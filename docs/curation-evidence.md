@@ -59,3 +59,23 @@ Data da coleta: 2026-09-24. Escopo: skills disponíveis, histórico de prompts e
 - `sources.md` documenta um clone de `addyosmani/agent-skills` que não existe no path local atual; o comando precisa ser revalidado antes de ser tratado como instalação concluída.
 - O histórico de prompts é forte evidência de necessidade, mas não prova autoria, licença ou manutenção de cada skill.
 - OpenCode v2 documenta `~/.agents/skills` como compatibility source global, `SKILL.md` como entrada de diretório e IDs derivados do path: <https://opencode.ai/v2/docs/skills/>.
+
+## Segunda passagem — mineração strict do corpus
+
+A análise de prompts remov 278 mensagens geradas pelo sistema e manteve 3.270 mensagens humanas. Rankings relevantes:
+
+- 1.362/3.270 prompts com menos de 50 caracteres; 51 runs consecutivos repetidos: contexto/continuidade é necessidade, não conveniência.
+- 405 prompts de review/auditoria; 139 falaram de subagentes: revisão anti-alucinação e orquestração são núcleo.
+- 269 menções a documentação; 159 comparações docs versus código: spec é contrato operacional.
+- 427 logs, 298 erros, 121 debug e 445 termos de teste: evidência runtime e testes devem ser sensors do harness.
+- 197 JSON, 204 Markdown, 113 table/tabela e 267 diretivas de formato: skills devem preservar contrato de saída, não inventar wrapper.
+- 90 prompts/78 sessões tocaram segurança; retrieval/histórico aparece em 35 prompts ligados a Mind.
+
+A mineração encontrou `browser-testing-with-devtools` 15 vezes, `context-engineering` 5 e `documentation-and-adrs` 3; todas são third-party e ficam fora da allowlist. `doubt-driven-development` aparece 3 vezes, mas é third-party. Isso reforça `sources.md` como installed pack em vez de cópia.
+
+### Decisões recalibradas
+
+- Sete `estilo-*` continuam `sim` por preferência explícita do usuário e objetivo do repo, mas a evidência de uso individual é fraca; pressure-test permanece pendência, não motivo para apagá-los.
+- `spec-driven-harness` entra como local-derived: apareceu em `~/.claude/skills` e foi aplicado a este trabalho multi-arquivo.
+- `mind-management` fica `não`: o Mind é owner do skill e pode regenerá-lo.
+- `chrome-devtools-agent` fica `sim` como wrapper local-derived, com dependência MCP explícita; se origem pública for confirmada futuramente, mover para `sources.md`.
