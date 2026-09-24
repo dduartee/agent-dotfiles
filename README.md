@@ -1,4 +1,4 @@
-# agent-config
+# my-agents
 
 > **Configuração pessoal de agentes** — feita sob medida para as minhas
 > máquinas, assinaturas e fluxo. Publicada (privada) para referência e backup.
