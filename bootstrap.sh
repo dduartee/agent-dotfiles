@@ -30,6 +30,18 @@ if [ "$CMD" = "sync" ]; then
     src="$HOME_DIR/$r"; [ -e "$src" ] || { echo "skip (sem ~/$r)"; continue; }
     mkdir -p "$REPO/$(dirname "$r")"; cp -f "$src" "$REPO/$r"; echo "sync $r"
   done
+  # importa skills marcadas "sim" na CURATION.md (de ~/.agents ou ~/.config/opencode/skills)
+  if [ -f "$REPO/CURATION.md" ]; then
+    grep -E '^\|[^|]+\|[^|]+\|[[:space:]]*sim[[:space:]]*\|' "$REPO/CURATION.md" \
+      | awk -F'|' '{gsub(/^ +| +$/,"",$2); print $2}' | while read -r name; do
+        for base in "$HOME_DIR/.agents/skills" "$HOME_DIR/.config/opencode/skills"; do
+          if [ -d "$base/$name" ]; then
+            mkdir -p "$REPO/.agents/skills/$name"; cp -fR "$base/$name/." "$REPO/.agents/skills/$name/"
+            echo "skill: $name"; break
+          fi
+        done
+      done
+  fi
   echo "snapshot pronto. Revise: git -C \"$REPO\" status"
   exit 0
 fi

@@ -56,6 +56,10 @@ DRY_RUN=1 ./bootstrap.sh link   # prévia
 | terminal-browser | app local | `~/.local/share/terminal-browser` | atualizar o app |
 | vozes de output (`estilo-*`) | [hesreallyhim/awesome-claude-code-output-styles](https://github.com/hesreallyhim/awesome-claude-code-output-styles) + smixs | **portadas** → neste repo | diff manual quando mudar |
 
+**Favoritas em uso (não vendorizadas):** `doubt-driven-development` e `brainstorming`
+(+ *visual-companion*) — pack **superpowers**; `i-have-adhd` — vendor symlink;
+`generating-exams` — própria (versionada em `.agents/skills/`).
+
 ## Rules
 
 `.gitignore` bloqueia forma-de-credencial (`.env`, `*.key`, `*token*`,

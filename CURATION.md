@@ -46,7 +46,7 @@ Fonte viva: `~/.agents/skills` + `~/.config/opencode/skills`.
 | handoff | 3º (superpowers?) |  |
 | human-in-the-loop-debug | 3º (superpowers?) |  |
 | idea-refine | 3º (superpowers?) |  |
-| i-have-adhd | vendor (symlink → /home/gabrielkduarte/.local/share/opencode/vendor/i-have-adhd/skills/i-have-adhd) |  |
+| i-have-adhd | vendor (symlink → /home/gabrielkduarte/.local/share/opencode/vendor/i-have-adhd/skills/i-have-adhd) ⭐ |
 | implement | 3º (superpowers?) |  |
 | implement-spec | 3º (superpowers?) |  |
 | improve-codebase-architecture | 3º (superpowers?) |  |
@@ -89,5 +89,5 @@ Fonte viva: `~/.agents/skills` + `~/.config/opencode/skills`.
 | writing-fragments | 3º (superpowers?) |  |
 | writing-shape | 3º (superpowers?) |  |
 | chrome-devtools-agent | própria (opencode-only) |  |
-| generating-exams | própria (opencode-only) |  |
+| generating-exams | própria (opencode-only) | sim |
 | mind-management | própria (opencode-only) |  |
