@@ -47,18 +47,19 @@ DRY_RUN=1 ./bootstrap.sh link   # prévia
 - **Pessoal** — `pendentes.md`, `docs/`.
 - **Vendor de terceiros** — ver inventário abaixo; não copiar para cá.
 
-## Componentes externos (inventário + atualização)
+## Componentes externos (origem GitHub + atualização)
 
-| Componente | Fonte | Onde vive | Atualizar |
+| Componente | Origem (GitHub) | Onde vive | Atualizar |
 | --- | --- | --- | --- |
-| superpowers | plugin OpenCode (git/npm) | `~/.cache/opencode/npm/...` | reinstalar plugin |
-| i-have-adhd | [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd) | `~/.local/share/opencode/vendor/i-have-adhd` | `git pull` no vendor |
+| superpowers (`brainstorming` + visual-companion, ...) | [obra/superpowers](https://github.com/obra/superpowers) — MIT, v6.4.1 | plugin OpenCode `superpowers@git+https://github.com/obra/superpowers.git` → `~/.cache/opencode/npm/…` | reinstalar o plugin |
+| doubt-driven-development | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) — MIT (`skills/doubt-driven-development/`) | copiada em `~/.agents/skills/` | re-baixar do pack |
+| i-have-adhd | [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd) — MIT | `~/.local/share/opencode/vendor/i-have-adhd` (symlink em `~/.agents/skills/`) | `git pull` |
 | terminal-browser | app local | `~/.local/share/terminal-browser` | atualizar o app |
-| vozes de output (`estilo-*`) | [hesreallyhim/awesome-claude-code-output-styles](https://github.com/hesreallyhim/awesome-claude-code-output-styles) + smixs | **portadas** → neste repo | diff manual quando mudar |
+| vozes de output (`estilo-*`) | [hesreallyhim/awesome-claude-code-output-styles](https://github.com/hesreallyhim/awesome-claude-code-output-styles) + smixs | **portadas** → neste repo | diff manual |
+| generating-exams | **sem upstream público** (local) | **neste repo**, `.agents/skills/` | — |
 
-**Favoritas em uso (não vendorizadas):** `doubt-driven-development` e `brainstorming`
-(+ *visual-companion*) — pack **superpowers**; `i-have-adhd` — vendor symlink;
-`generating-exams` — própria (versionada em `.agents/skills/`).
+**Favoritas em uso:** `doubt-driven-development` · `brainstorming` (+ visual-companion)
+· `i-have-adhd` · `generating-exams` (própria, versionada).
 
 ## Rules
 
