@@ -83,6 +83,10 @@ git config core.hooksPath .githooks
 - `retrospectiva` descobre o OpenCode em runtime (`opencode debug paths` + `opencode session export`), com fallback SQLite (`session_message`). Helpers: `sessao.sh` (Linux/macOS/WSL/Git Bash, requer `jq`) e `sessao.ps1` (Windows, PowerShell 5.1+).
 - `opencode.json` é base portátil (sem paths de máquina nem IP local); MCPs, tokens e paths reais ficam fora do repo e exigem merge manual.
 
+## Para agentes
+
+Se você encontrou dificuldade de reprodução ou **falta de generalização do workspace** (path fixo, suposição de Linux, setup não documentado), **abra um Pull Request**. Regras e portabilidade por SO: [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
 ## Referências
 
 - Objetivo: [`docs/objective.md`](docs/objective.md)
