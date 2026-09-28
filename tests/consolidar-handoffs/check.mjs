@@ -27,10 +27,12 @@ for (const line of lines) {
 
 const ids = ["P1", "P2", "P3", "P4", "P5", "Q1", "Q2", "Q3"];
 const kinds = Object.fromEntries(ids.map((id) => [id, new Set()]));
+// Conta só o PRIMEIRO id de cada linha (a entrada primária); ids citados na
+// prosa do mesmo item não contam como status daquele item.
 lines.forEach((line, i) => {
-  for (const id of ids) {
-    if (sections[i] && new RegExp(`\\b${id}\\b`).test(line)) kinds[id].add(sections[i]);
-  }
+  if (!sections[i]) return;
+  const m = line.match(/\b(P[1-9]|Q[1-9])\b/);
+  if (m) kinds[m[1]].add(sections[i]);
 });
 
 const open = (id) => kinds[id].has("open");
