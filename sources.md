@@ -86,7 +86,7 @@ bun install
 
 - `opencode.json` é base portátil (sem paths de máquina nem IP local); a config real (MCPs, tokens, paths) fica fora do repo e exige merge manual.
 - `chrome-devtools-agent` depende do MCP Chrome DevTools instalado.
-- `retrospectiva` descobre o OpenCode em runtime (`opencode debug paths`, `opencode session export`) e cai para SQLite (`session_message`) quando o export não existe. Helpers `sessao.sh` (POSIX) e `sessao.ps1` (Windows); o PS é best-effort — não executado em Windows neste repo.
+- `retrospectiva` descobre o OpenCode em runtime (`opencode debug paths`, `opencode session export`) e cai para SQLite (`session_message`) quando o export não existe. Helpers `sessao.sh` (POSIX) e `sessao.ps1` (Windows); o PS foi validado em PowerShell 7.4.6 (parse + execução); o Windows PowerShell 5.1 não foi testado.
 - `spec-driven-harness` é conteúdo local; não possui upstream declarado.
 - O lock de skills cobre parte do ambiente; não substitui um SBOM/licença por skill.
 

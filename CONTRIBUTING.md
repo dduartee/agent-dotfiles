@@ -33,7 +33,7 @@ neutra.
 
    ```bash
    bash scripts/validate-repo.sh
-   for t in tests/*.sh; do bash "$t"; done
+   for t in tests/*.sh tests/*/*.sh; do bash "$t"; done
    node tests/pontas-soltas-test.mjs
    ```
 
@@ -44,7 +44,7 @@ neutra.
 
 | Componente | Linux/macOS | Windows |
 |---|---|---|
-| `bootstrap.sh link\|sync` | sim (bash) | via **Git Bash** ou **WSL** |
+| `bootstrap.sh link\|sync` | sim (bash ≥4; macOS: `brew install bash`) | via **Git Bash** ou **WSL** |
 | `scripts/validate-repo.sh` | sim | via Git Bash/WSL |
 | `tests/*.sh` | sim | via Git Bash/WSL |
 | `tests/*.mjs` | sim (Node) | sim (Node) |

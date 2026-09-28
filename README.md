@@ -93,5 +93,6 @@ Se você encontrou dificuldade de reprodução ou **falta de generalização do 
 - Evidência de curadoria: [`docs/curation-evidence.md`](docs/curation-evidence.md)
 - Atribuições: [`docs/ATTRIBUTIONS.md`](docs/ATTRIBUTIONS.md)
 - Fontes externas: [`sources.md`](sources.md)
+- Ecossistema (repos de skills para complementar): [`docs/ecosystem.md`](docs/ecosystem.md)
 - OpenCode v2 skills: <https://opencode.ai/v2/docs/skills/>
 - Repositório: <https://github.com/dduartee/agent-dotfiles> (privado)

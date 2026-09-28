@@ -8,6 +8,12 @@
 # opencode.json porque a configuração da máquina pode conter MCPs/segredos.
 set -euo pipefail
 
+# Requer bash >= 4 (mapfile, read -d). macOS traz bash 3.2: use `brew install bash`.
+if [ "${BASH_VERSINFO[0]:-0}" -lt 4 ]; then
+  echo "erro: bootstrap.sh exige bash >= 4 (atual: ${BASH_VERSION:-?}). macOS: brew install bash" >&2
+  exit 1
+fi
+
 REPO="$(cd "$(dirname "$0")" && pwd)"
 HOME_DIR="${HOME:?}"
 DRY="${DRY_RUN:-0}"

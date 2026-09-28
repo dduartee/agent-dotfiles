@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-TMP="$(mktemp -d /tmp/opencode/validate-test.XXXXXX)"
+TMP="$(mktemp -d "${TMPDIR:-/tmp}/validate-test.XXXXXX")"
 trap 'rm -rf "$TMP"' EXIT
 
 fail() { printf 'FAIL: %s\n' "$*" >&2; exit 1; }

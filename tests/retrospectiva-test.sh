@@ -5,7 +5,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SCRIPT="$ROOT/.agents/skills/retrospectiva/scripts/sessao.sh"
-TMP="$(mktemp -d /tmp/opencode/retrospectiva-test.XXXXXX)"
+TMP="$(mktemp -d "${TMPDIR:-/tmp}/retrospectiva-test.XXXXXX")"
 trap 'rm -rf "$TMP"' EXIT
 
 fail() { printf 'FAIL: %s\n' "$*" >&2; exit 1; }
