@@ -26,7 +26,7 @@ Data da coleta: 2026-09-24. Escopo: skills disponíveis, histórico de prompts e
 
 | Skill | Decisão | Autoria/origem | Evidência/overlap | Portabilidade | Ação |
 |---|---|---|---|---|---|
-| `retrospectiva` | `sim` | Própria; Reads `session_message` do OpenCode | Fecha pendências, detecta rastros e auto-revisa; overlap baixo com `doubt-driven-development` | Parcial: depende de OpenCode DB/schema | Versionar; documentar limite e teste de execução |
+| `retrospectiva` | `sim` | Própria; lê a sessão do OpenCode (export ou `session_message`) | Fecha pendências, detecta rastros e auto-revisa; overlap baixo com `doubt-driven-development` | Alta para o export; fallback SQLite; cross-platform (Linux/macOS/Windows) | Versionar; helpers POSIX + Windows e teste de execução |
 | `estilo-ajudante-haicai` | `sim` | Adaptação própria; origem de estilo em `sources.md` | Output style explícito; uso como modo, não mecanismo de memória | Alta; só `SKILL.md` | Versionar com atribuição |
 | `estilo-conciso` | `sim` | Adaptação própria | Preferência recorrente por densidade; não substitui `retrospectiva` | Alta | Versionar |
 | `estilo-evangelista-tecnico` | `sim` | Adaptação própria | Modo de saída; baixa dependência externa | Alta | Versionar |
@@ -56,7 +56,7 @@ Data da coleta: 2026-09-24. Escopo: skills disponíveis, histórico de prompts e
 ## Evidência de limitações atuais
 
 - `bootstrap.sh` atualmente sincroniza arquivos tracked individually e não instala packs externos.
-- `opencode.json` sanitizado ainda contém paths absolutos e endereço de rede local; merge manual permanece obrigatório.
+- `opencode.json` é base portátil (sem paths de máquina nem IP local); a config real da máquina (MCPs, tokens, paths) permanece fora do repo e exige merge manual.
 - `sources.md` documenta um clone de `addyosmani/agent-skills` que não existe no path local atual; o comando precisa ser revalidado antes de ser tratado como instalação concluída.
 - O histórico de prompts é forte evidência de necessidade, mas não prova autoria, licença ou manutenção de cada skill.
 - OpenCode v2 documenta `~/.agents/skills` como compatibility source global, `SKILL.md` como entrada de diretório e IDs derivados do path: <https://opencode.ai/v2/docs/skills/>.

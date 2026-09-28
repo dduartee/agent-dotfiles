@@ -8,7 +8,7 @@
 
 **Tech Stack:** Bash, Node.js (`node --check`/JSON), Markdown, symlinks POSIX, Git hooks locais.
 
-**Spec:** `/tmp/opencode/agent-dotfiles-objetivo-final.md`
+**Spec:** [`docs/objective.md`](docs/objective.md)
 
 ## Global Constraints
 
@@ -34,8 +34,8 @@
 
 **Files:**
 - Create: `docs/curation-evidence.md`
-- Read: `/tmp/opencode/agent-dotfiles-objetivo-final.md`
-- Read: `/home/gabrielkduarte/Projects/opencode-prompt-analysis/{README.md,analyses/final-report.md,data/*.jsonl}`
+- Read: `docs/objective.md`
+- Read: `~/Projects/opencode-prompt-analysis/{README.md,analyses/final-report.md,data/*.jsonl}`
 - Read: `CURATION.md`, `sources.md`, `README.md`
 
 **Interfaces:**
@@ -46,7 +46,7 @@
 Run:
 
 ```bash
-cd /home/gabrielkduarte/Projects/opencode-prompt-analysis
+cd ~/Projects/opencode-prompt-analysis
 python3 scripts/export_opencode_user_messages.py --summary
 ```
 
@@ -149,7 +149,7 @@ Marcar `sim` apenas para skills próprias confirmadas. Para `chrome-devtools-age
 Run:
 
 ```bash
-cd /home/gabrielkduarte/agent-dotfiles
+cd ~/agent-dotfiles
 bash bootstrap.sh sync
 git status --short
 git diff --stat

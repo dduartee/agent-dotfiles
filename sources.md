@@ -84,9 +84,9 @@ bun install
 
 ## Limites conhecidos
 
-- `opencode.json` sanitizado ainda contém paths absolutos e rede local; não é portátil sem merge manual.
+- `opencode.json` é base portátil (sem paths de máquina nem IP local); a config real (MCPs, tokens, paths) fica fora do repo e exige merge manual.
 - `chrome-devtools-agent` depende do MCP Chrome DevTools instalado.
-- `retrospectiva` depende do schema/path do `opencode.db` da máquina.
+- `retrospectiva` descobre o OpenCode em runtime (`opencode debug paths`, `opencode session export`) e cai para SQLite (`session_message`) quando o export não existe. Helpers `sessao.sh` (POSIX) e `sessao.ps1` (Windows); o PS é best-effort — não executado em Windows neste repo.
 - `spec-driven-harness` é conteúdo local; não possui upstream declarado.
 - O lock de skills cobre parte do ambiente; não substitui um SBOM/licença por skill.
 

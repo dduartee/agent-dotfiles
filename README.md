@@ -47,7 +47,7 @@ CURATION.md -> bootstrap sync -> revisar git diff -> testes/validator -> commit
 
 Allowlist atual inclui:
 
-- `retrospectiva`
+- `retrospectiva` — cross-platform (Linux/macOS/Windows); descobre o OpenCode em runtime
 - `generating-exams`
 - `spec-driven-harness`
 - sete `estilo-*` adapted/ported, com atribuição em `sources.md`
@@ -79,12 +79,12 @@ git config core.hooksPath .githooks
 ```
 
 - `mind-management` e `mind-automation.js` têm ownership externo; evitar symlink para output gerado.
-- `retrospectiva` depende do schema `session_message` do OpenCode; mudança de schema exige teste.
-- Paths absolutos/IP local no `opencode.json` são limites de portabilidade, não portability automática.
+- `retrospectiva` descobre o OpenCode em runtime (`opencode debug paths` + `opencode session export`), com fallback SQLite (`session_message`). Helpers: `sessao.sh` (Linux/macOS/WSL/Git Bash, requer `jq`) e `sessao.ps1` (Windows, PowerShell 5.1+).
+- `opencode.json` é base portátil (sem paths de máquina nem IP local); MCPs, tokens e paths reais ficam fora do repo e exigem merge manual.
 
 ## Referências
 
-- Objetivo: [`/tmp/opencode/agent-dotfiles-objetivo-final.md`](/tmp/opencode/agent-dotfiles-objetivo-final.md)
+- Objetivo: [`docs/objective.md`](docs/objective.md)
 - Evidência de curadoria: [`docs/curation-evidence.md`](docs/curation-evidence.md)
 - Atribuições: [`docs/ATTRIBUTIONS.md`](docs/ATTRIBUTIONS.md)
 - Fontes externas: [`sources.md`](sources.md)

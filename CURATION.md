@@ -51,7 +51,7 @@ Terceiros nunca são copiados para este repo; veja `sources.md`.
 | handoff | externo |  |
 | human-in-the-loop-debug | externo |  |
 | idea-refine | externo |  |
-| i-have-adhd | vendor (symlink → /home/gabrielkduarte/.local/share/opencode/vendor/i-have-adhd/skills/i-have-adhd) ⭐ |
+| i-have-adhd | vendor (symlink → ~/.local/share/opencode/vendor/i-have-adhd/skills/i-have-adhd) ⭐ | não |
 | implement | externo |  |
 | implement-spec | externo |  |
 | improve-codebase-architecture | externo |  |
@@ -78,7 +78,7 @@ Terceiros nunca são copiados para este repo; veja `sources.md`.
 | subagent-context-negotiation | externo |  |
 | tdd | externo |  |
 | teach | externo |  |
-| terminal-browser | vendor (symlink → /home/gabrielkduarte/.local/share/terminal-browser/app/skills/default/terminal-browser) |  |
+| terminal-browser | vendor (symlink → ~/.local/share/terminal-browser/app/skills/default/terminal-browser) | não |
 | test-driven-development | externo |  |
 | to-questionnaire | externo |  |
 | to-spec | externo |  |
@@ -95,5 +95,5 @@ Terceiros nunca são copiados para este repo; veja `sources.md`.
 | writing-fragments | externo |  |
 | writing-shape | externo |  |
 | chrome-devtools-agent | externo/derived (awesome-copilot) | defer |
-| generating-exams | própria (opencode-only) | sim |
+| generating-exams | própria | sim |
 | mind-management | externo (gerado pelo Mind) | não |

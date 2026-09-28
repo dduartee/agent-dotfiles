@@ -77,12 +77,14 @@ for file in "$ROOT/README.md" "$ROOT/sources.md" "$ROOT/docs/curation-evidence.m
   fi
 done
 
-# Portability warnings, not hard failures: local config intentionally remains out of scope.
-if grep -nE '/home/|100\.115\.' "$ROOT/.config/opencode/opencode.json" >/dev/null 2>&1; then
-  warn 'opencode.json contains machine-local paths/address; merge manually'
-fi
-if grep -nE '@latest' "$ROOT/.config/opencode/opencode.json" >/dev/null 2>&1; then
-  warn 'opencode.json contains @latest; pin after compatibility review'
+# Portability guard: the versioned base must not carry machine-local paths/addresses.
+if [ -f "$ROOT/.config/opencode/opencode.json" ]; then
+  if grep -nE '/home/|/Users/|C:\\\\Users|[0-9]{1,3}(\.[0-9]{1,3}){3}' "$ROOT/.config/opencode/opencode.json" >/dev/null 2>&1; then
+    error 'opencode.json contains machine-local path/address; keep only the portable base'
+  fi
+  if grep -nE '@latest' "$ROOT/.config/opencode/opencode.json" >/dev/null 2>&1; then
+    warn 'opencode.json contains @latest; pin after compatibility review'
+  fi
 fi
 
 if [ "$errors" -ne 0 ]; then

@@ -6,42 +6,22 @@
   "mcp": {
     "mind": {
       "type": "local",
-      "command": [
-        "/home/gabrielkduarte/.local/share/mind/mind",
-        "mcp"
-      ],
+      "command": ["mind", "mcp"],
       "enabled": true
     },
     "chrome-devtools": {
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "chrome-devtools-mcp@latest"
-      ],
+      "command": ["npx", "-y", "chrome-devtools-mcp@latest"],
       "enabled": true
     },
     "playwright": {
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@playwright/mcp@latest"
-      ],
+      "command": ["npx", "-y", "@playwright/mcp@latest"],
       "enabled": true
     },
     "exa": {
       "type": "remote",
       "url": "https://mcp.exa.ai/mcp",
-      "enabled": true
-    },
-    "context": {
-      "type": "local",
-      "command": [
-        "/home/gabrielkduarte/.nvm/versions/node/v24.21.0/bin/node",
-        "/home/gabrielkduarte/Projects/context-mcp/node_modules/tsx/dist/cli.mjs",
-        "/home/gabrielkduarte/Projects/context-mcp/src/index.ts"
-      ],
       "enabled": true
     }
   },
@@ -50,16 +30,9 @@
       "npm": "@ai-sdk/openai-compatible",
       "name": "Ollama",
       "options": {
-        "baseURL": "http://100.115.36.21:11434/v1"
+        "baseURL": "http://localhost:11434/v1"
       },
-      "models": {
-        "hf.co/ornith-ai/Ornith-1.0-9B-GGUF:Q4_K_M": {
-          "name": "Ornith 1.0 9B"
-        },
-        "gemma4:e2b": {
-          "name": "gemma4-e2b"
-        }
-      }
+      "models": {}
     }
   }
 }

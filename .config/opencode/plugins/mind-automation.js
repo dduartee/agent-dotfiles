@@ -20,10 +20,11 @@
 //   node mind-automation.js projects/gabrielkduarte   # self-test (imprime o texto)
 //   opencode plugin list                              # mind-automation local
 import { spawnSync } from 'node:child_process';
-import { basename } from 'node:path';
+import { basename, join } from 'node:path';
+import { homedir } from 'node:os';
 import { pathToFileURL } from 'node:url';
 
-const MIND_BIN = '/home/gabrielkduarte/.local/share/mind/mind';
+const MIND_BIN = process.env.MIND_BIN || join(homedir(), '.local', 'share', 'mind', 'mind');
 const FALLBACK_MIND_BIN = 'mind';
 const MAX_CONTEXT_CHARS = 1600;
 const SHORT_CONTEXT_CHARS = 400;
