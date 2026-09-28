@@ -1,6 +1,6 @@
 ---
 name: retrospectiva
-description: Use quando o usuário pedir retrospectiva, recap, "o que ficou pendente", "o que esquecemos", resumo da sessão, ou perto de encerrar, compactar ou commitar uma sessão.
+description: Use quando o usuário pedir retrospectiva, recap, "o que ficou pendente", "o que esquecemos", resumo da sessão, ou perto de encerrar, compactar ou commitar uma sessão. Funciona em Linux, macOS e Windows (OpenCode).
 ---
 
 # Retrospectiva
@@ -12,25 +12,71 @@ Duas responsabilidades:
 
 O agente esquece e deixa pendências para trás. Pior: a compactação de contexto (e a gestão de KV cache) descarta informação sem avisar. Retrospectiva que só olha a memória do agente herda a mesma perda.
 
-**Ground truth = a sessão real gravada pelo OpenCode** (`session_message` no `opencode.db`), re-consultada em runtime. Nunca a tua memória do contexto.
+**Ground truth = a sessão real gravada pelo OpenCode**, re-consultada em runtime. Nunca a tua memória do contexto.
 
-## Passo 0 — obrigatório, antes de qualquer análise
+Foco: **OpenCode** (o harness que grava a sessão). Paths, comando e SO variam — **descubra, não assuma**.
 
-Roda o script e lê a saída inteira:
+## Passo 0 — descobrir o ambiente e a sessão (obrigatório)
 
-```bash
-SKILL_DIR="${SKILL_DIR:-$HOME/.agents/skills/retrospectiva}"
-bash "$SKILL_DIR/scripts/sessao.sh"            # sessão atual (auto)
-bash "$SKILL_DIR/scripts/sessao.sh" ses_xxx    # sessão específica
+### 0.1 Achar o OpenCode
+
+- POSIX (Linux/macOS/WSL/Git Bash): `command -v opencode`
+- Windows (PowerShell/cmd): `where.exe opencode`
+- Versão: `opencode --version`
+- Override do binário: `OPENCODE_BIN`
+
+Se não achar no PATH, procure nos locais de instalação comuns antes de desistir: instalador shell (`~/.local/bin`, `~/.opencode/bin`), npm global (`npm prefix -g`), Bun (`~/.bun/bin`), Homebrew no macOS (`/opt/homebrew/bin`, `/usr/local/bin`), Windows **Scoop** (`~\scoop\shims`), **Chocolatey** (`%ProgramData%\chocolatey\bin`), `mise`. Sem `opencode`, **não há sessão gravada**: pare e diga isso — não invente transcript.
+
+### 0.2 Achar os dados (autoridade = `opencode debug paths`)
+
+Rode e leia as chaves: `home, data, config, cache, state, log, tmp, bin, repos, db`.
+
+- `db` = caminho do `opencode.db` (a fonte do ground truth).
+- **Nunca hardcode** `~/.local/share/opencode` — muda por SO e por tipo de instalação.
+- Overrides possíveis: `OPENCODE_DATA_DIR`, `OPENCODE_CONFIG`, `OPENCODE_CONFIG_DIR`, `OPENCODE_DB`.
+
+Fallback só se `debug paths` não existir (versão antiga):
+
+| SO | data | config | db |
+|----|------|--------|----|
+| Linux | `$XDG_DATA_HOME/opencode` ou `~/.local/share/opencode` | `~/.config/opencode` | `<data>/opencode.db` |
+| macOS | `~/.local/share/opencode` | `~/.config/opencode` | `<data>/opencode.db` |
+| Windows | `%USERPROFILE%\.local\share\opencode` | `%USERPROFILE%\.config\opencode` | `<data>\opencode.db` |
+
+(App Desktop no Windows usa `%LOCALAPPDATA%\opencode\data`.) O export do passo 0.4 **dispensa o banco**.
+
+### 0.3 Resolver a sessão
+
+Em ordem: `$1`/`-SessionId` → `$OPENCODE_SESSION_ID` → `opencode api get /api/session/active` → casa `location.directory` com o diretório atual → `opencode session list --format json`.
+
+Com **2+ sessões no mesmo diretório** (ex.: outro agente rodando em paralelo), **não adivinhe** — liste os candidatos e peça o id explícito.
+
+### 0.4 Extrair o ground truth (export = caminho portátil)
+
+```
+opencode session export <ses_xxx> > <tmp>/retro-<id>.json     # --sanitize redige segredos
 ```
 
-Use o caminho absoluto do skill; execução a partir de outro diretório não muda ground truth. `OPENCODE_DB` e `RETRO_MAX` podem sobrescrever DB e limite de caracteres.
+O JSON traz `info` (título, tokens, custo) e `messages[]` (`type`, `text`, `content[]`). Funciona em **Linux, macOS e Windows**, sem `sqlite3` nem `jq`.
 
-O ID é resolvido sozinho: `$OPENCODE_SESSION_ID` → `GET /api/session/active` → casa `location.directory` com o cwd. Com **2+ sessões no mesmo diretório** (ex.: outro agente rodando em paralelo), o script **não adivinha** — lista os candidatos e pede o id. Se falhar, passe `ses_xxx`.
+Fallback (versão antiga/offline) → SQLite em `<db>`:
 
-A saída traz, nesta ordem: cabeçalho (contagens + compactação), **RASTROS DE PENDÊNCIA** e o **TRANSCRIPT** real. Só depois analisa.
+```
+sqlite3 <db> "select seq,type,data from session_message where session_id='<id>' order by seq;"
+```
 
-Se o script falhar, diz isso explicitamente. Não finjas ter analisado.
+Alternativa via API: `opencode api get /api/session/<id>/message`.
+
+### 0.5 Helper (opcional — acelera; não é obrigatório)
+
+- POSIX (Linux/macOS/WSL/Git Bash): `bash "$SKILL_DIR/scripts/sessao.sh" [ses_xxx]`
+- Windows (PowerShell): `pwsh -File "$env:USERPROFILE\.agents\skills\retrospectiva\scripts\sessao.ps1" [-SessionId ses_xxx]`
+
+Onde `SKILL_DIR="${SKILL_DIR:-$HOME/.agents/skills/retrospectiva}"` — use o caminho absoluto do skill; rodar de outro diretório não muda o ground truth.
+
+Dependências: `opencode`; `jq` no helper POSIX (o PowerShell usa JSON nativo). **Sem helper, faça 0.1–0.4 à mão** e leia o JSON exportado com as tuas tools (`read`/`grep`) — é válido.
+
+A saída traz, nesta ordem: cabeçalho (contagens + compactação), **RASTROS DE PENDÊNCIA** e o **TRANSCRIPT** real. Só depois analisa. Se o helper falhar, diz isso explicitamente. Não finjas ter analisado.
 
 ## Quando usar
 
@@ -94,6 +140,16 @@ Pergunta aberta: [a única que mais trava]
 Risco: [se houver]
 Próximo passo: [UMA ação < 2 min]
 ```
+
+## Compatibilidade (resumo)
+
+| Ambiente | Como extrair o ground truth | Dependências |
+|----------|------------------------------|--------------|
+| Linux/macOS/WSL/Git Bash | `sessao.sh` (export) ou export manual | `opencode`, `jq` |
+| Windows nativo (PowerShell) | `sessao.ps1` ou `opencode session export` + `read` | `opencode`, PowerShell 5.1+ |
+| Sem `opencode`/DB | inacessível — diga e pare | — |
+
+O OpenCode no Windows grava em `%USERPROFILE%\.local\share\opencode`; o comando que importa (`session export`) é o mesmo em todos os SOs.
 
 ## Futuro (não implementado)
 
