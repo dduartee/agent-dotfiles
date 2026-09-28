@@ -25,3 +25,4 @@ bun.lock
 __pycache__/
 .venv/
 .superpowers/
+tests/consolidar-handoffs/runs/

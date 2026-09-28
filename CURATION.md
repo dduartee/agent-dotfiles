@@ -25,6 +25,7 @@ Terceiros nunca são copiados para este repo; veja `sources.md`.
 | code-review-and-quality | externo |  |
 | code-simplification | externo |  |
 | compress | externo |  |
+| consolidar-handoffs | própria | sim |
 | context-engineering | externo |  |
 | cross-model-review | externo |  |
 | debugging-and-error-recovery | externo |  |

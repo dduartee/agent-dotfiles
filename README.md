@@ -48,6 +48,7 @@ CURATION.md -> bootstrap sync -> revisar git diff -> testes/validator -> commit
 Allowlist atual inclui:
 
 - `retrospectiva` — cross-platform (Linux/macOS/Windows); descobre o OpenCode em runtime
+- `consolidar-handoffs` — junta N handoffs em 1 consolidado correlacionado, sem perder pendência
 - `generating-exams`
 - `spec-driven-harness`
 - sete `estilo-*` adapted/ported, com atribuição em `sources.md`
