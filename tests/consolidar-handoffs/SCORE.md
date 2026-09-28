@@ -1,7 +1,9 @@
 # Placar — `consolidar-handoffs` (TDD)
 
-Fixture: `fixtures/` (4 handoffs, projA + projB). Scorer: `check.mjs` (10 critérios).
+Fixture: `fixtures/` (4 handoffs, projA + projB). Scorer: `check.mjs` (**11 critérios**).
 Modelos leves. `runs/` é descartável (git-ignored); este arquivo é a evidência versionada.
+
+> Endurecido após review independente (2026-09-28): correlação exige o cluster `srclib` com ≥2 ids na mesma linha; duplicata não-mergeada reprova; quebra de seção em heading não-status; item ≠ rótulo. Regressões em `check.test.sh` (A/B/C/D/F).
 
 | modelo | arm | run | score | falhas |
 |---|---|---|---|---|
